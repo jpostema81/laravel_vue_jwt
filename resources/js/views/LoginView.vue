@@ -2,16 +2,25 @@
 import axios from "axios";
 import { ref } from "vue";
 
-const credentials = { email: "", password: "" };
+const credentials = ref({ email: "", password: "" });
+const loginMessage = ref("");
 
-const login = () => {
-    axios.post("api/login", credentials);
+const login = async () => {
+    try {
+        const { data } = await axios.post("api/login", credentials.value);
+        loginMessage.value =
+            "Je bent ingelogd met JWT. Inhoud JWT token: " + data.access_token;
+    } catch {
+        loginMessage.value = "Inloggen met JWT mislukt";
+    }
 };
 </script>
 
 <template>
     <div>
         <h1>Login page</h1>
+
+        <div>{{ loginMessage }}</div>
 
         <div id="form">
             <form @submit.prevent="login">
